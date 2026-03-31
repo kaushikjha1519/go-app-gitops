@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_USER   = '<kaushikkjha>'
+        DOCKERHUB_USER   = 'kaushikkjha'
         IMAGE_NAME       = 'go-app'
         GITOPS_REPO      = 'https://github.com/kaushikjha1519/gomanifest.git'
         GITOPS_REPO_NAME = 'gomanifest.git'
