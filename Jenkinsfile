@@ -48,30 +48,32 @@ pipeline {
         }
 
         stage('Update GitOps Repo') {
-            steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'github-creds',
-                    usernameVariable: 'GIT_USER',
-                    passwordVariable: 'GIT_PASS'
-                )]) {
-                    sh '''
-                    git clone https://github.com/kaushikjha1519/$GITOPS_REPO_NAME.git
-                    cd $GITOPS_REPO_NAME
+    steps {
+        withCredentials([usernamePassword(
+            credentialsId: 'github-creds',
+            usernameVariable: 'GIT_USER',
+            passwordVariable: 'GIT_PASS'
+        )]) {
+            sh '''
+            git clone https://github.com/kaushikjha1519/$GITOPS_REPO_NAME.git
+            cd $GITOPS_REPO_NAME
 
-                    git config user.email "jenkins@ci.local"
-                    git config user.name "Jenkins"
+            git config user.email "jenkins@ci.local"
+            git config user.name "Jenkins"
 
-                    git remote set-url origin https://$GIT_USER:$GIT_PASS@github.com/kaushikjha1519/$GITOPS_REPO_NAME.git
+            # 🔥 THIS IS THE FIX (no URL injection)
+            git config credential.helper store
+            echo "https://$GIT_USER:$GIT_PASS@github.com" > ~/.git-credentials
 
-                    sed -i '' 's|image: '"$DOCKERHUB_USER/$IMAGE_NAME"':.*|image: '"$DOCKERHUB_USER/$IMAGE_NAME:$BUILD_NUMBER"'|' deployment.yaml
+            sed -i '' 's|image: '"$DOCKERHUB_USER/$IMAGE_NAME"':.*|image: '"$DOCKERHUB_USER/$IMAGE_NAME:$BUILD_NUMBER"'|' deployment.yaml
 
-                    git add deployment.yaml
-                    git commit -m "ci: update image tag to build-$BUILD_NUMBER" || true
-                    git push
-                    '''
-                }
-            }
+            git add deployment.yaml
+            git commit -m "ci: update image tag to build-$BUILD_NUMBER" || true
+            git push
+            '''
         }
+    }
+}
     }
 
     post {
