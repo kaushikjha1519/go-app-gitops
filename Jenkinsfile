@@ -54,7 +54,7 @@ pipeline {
                     usernameVariable: 'GIT_USER',
                     passwordVariable: 'GIT_PASS'
                 )]) {
-                    sh """
+                    sh '''
                         git clone https://${GIT_USER}:${GIT_PASS}@github.com/kaushikjha1519/${GITOPS_REPO_NAME}.git
                         cd ${GITOPS_REPO_NAME}
 
@@ -65,7 +65,7 @@ pipeline {
                         git add deployment.yaml
                         git commit -m "ci: update image tag to build-${BUILD_NUMBER}"
                         git push
-                    """
+                    '''
                 }
             }
         }
