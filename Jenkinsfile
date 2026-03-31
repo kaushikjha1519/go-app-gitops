@@ -55,7 +55,7 @@ pipeline {
                     passwordVariable: 'GIT_PASS'
                 )]) {
                     sh """
-                        git clone https://${GIT_USER}:${GIT_PASS}@github.com/<your-username>/${GITOPS_REPO_NAME}.git
+                        git clone https://${GIT_USER}:${GIT_PASS}@github.com/kaushikjha1519/${GITOPS_REPO_NAME}.git
                         cd ${GITOPS_REPO_NAME}
 
                         sed -i 's|image: ${DOCKERHUB_USER}/${IMAGE_NAME}:.*|image: ${DOCKERHUB_USER}/${IMAGE_NAME}:${BUILD_NUMBER}|' deployment.yaml
